@@ -1,0 +1,18 @@
+{
+
+    "name": "vitriolomaica-cell/it-ws03-projects_vitriolo",
+    "description": "Job seeker application",
+    "authors": [
+        {
+            "name": "Maica Vitriolo",
+            "email": "vitriolomaica@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Framework\\": "Framework/",
+            "App\\": "App/"
+        }
+    }
+
+}

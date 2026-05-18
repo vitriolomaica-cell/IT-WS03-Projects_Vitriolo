@@ -19,7 +19,7 @@ function basePath($path = '')
 
 function loadView($name, $data = [])
 {
-    $viewPath =  basePath("view/{$name}.view.php");
+    $viewPath =  basePath("App/view/{$name}.view.php");
 
     if (file_exists($viewPath)) {
         extract($data);
@@ -37,7 +37,7 @@ function loadView($name, $data = [])
 
 function loadPartials($name): string
 {
-    $partialPath = basePath("view/partials/{$name}.php");
+    $partialPath = basePath("App/view/partials/{$name}.php");
 
     if (file_exists($partialPath)) {
         ob_start();
