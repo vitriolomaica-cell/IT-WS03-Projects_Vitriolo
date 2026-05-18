@@ -90,12 +90,12 @@ class Router
      * Route the request
      * @param string $uri
      * @param string $method
-     * return void
+     * @return void
      */
 
-    public function route($uri)
+    public function route($uri, $method)
     {
-        $requestMethod = $_SERVER['REQUEST_METHOD'];
+        $requestMethod = strtoupper($method);
 
         foreach ($this->routes as $route) {
             //Split the current URI into segment
@@ -129,7 +129,7 @@ class Router
                 }
 
                 if ($match) {
-                    $controller = 'App\\controllers\\' . $route['controller'];
+                    $controller = 'App\\Controllers\\' . $route['controller'];
                     $controllerMethod = $route['controllerMethod'];
 
                     //instantiate the controller class

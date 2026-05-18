@@ -35,7 +35,12 @@ function loadView($name, $data = [])
  * @return void
  */
 
-function loadPartials($name)
+/**
+ * Load partials
+ * @param string $name/$partials
+ * @return string
+ */
+function loadPartials($name): string
 {
     $partialPath = basePath("App/view/partials/{$name}.php");
 
