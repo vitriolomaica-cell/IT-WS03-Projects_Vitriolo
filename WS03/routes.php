@@ -5,6 +5,9 @@ $router->get('/listings', 'ListingController@index');
 $router->get('/listings/create', 'ListingController@create');
 $router->get('/listing', 'ListingController@show');
 
+$router->get('/login', 'UserController@login');
+$router->get('/register', 'UserController@register');
+
 
 // return [
 //     '/' => 'controllers/home.php',
