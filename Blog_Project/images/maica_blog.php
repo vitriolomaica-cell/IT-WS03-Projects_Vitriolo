@@ -145,7 +145,7 @@ $author = "Maica M. Vitriolo";
                 </p>
             </div>
             <div class="card">
-                <img src="images/twice-group2.jpg" alt="TWICE Group">
+                <img src="twice-group2.jpg" alt="TWICE Group">
                 <div class="card-body">
                     <h3>TWICE</h3>
                     <p>
@@ -178,7 +178,7 @@ $author = "Maica M. Vitriolo";
             </div>
 
             <div class="card">
-                <img src="images/twice-era.jpg" alt="TWICE Era">
+                <img src="twice-era.jpg" alt="TWICE Era">
                 <div class="card-body">
                     <h3>Musical Growth</h3>
                     <p>
@@ -212,7 +212,7 @@ $author = "Maica M. Vitriolo";
             </div>
 
             <div class="card">
-                <img src="images/twice-once.jpg" alt="ONCE">
+                <img src="twice-once.jpg" alt="ONCE">
                 <div class="card-body">
                     <h3>Connection with Fans</h3>
                     <p>
@@ -240,7 +240,7 @@ $author = "Maica M. Vitriolo";
             </div>
 
             <div class="card">
-                <img src="images/twice-era2.jpg" alt="Global Impact">
+                <img src="twice-era2.jpg" alt="Global Impact">
                 <div class="card-body">
                     <h3>Global Impact</h3>
                     <p>
