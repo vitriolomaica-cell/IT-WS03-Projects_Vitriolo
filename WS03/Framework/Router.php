@@ -2,6 +2,8 @@
 
 namespace Framework;
 
+use App\Controllers\ErrorController;
+
 // $routes = require basePath('routes.php');
 
 // if (array_key_exists($uri, $routes)) {
@@ -14,12 +16,24 @@ class Router
 {
     protected $routes = [];
 
-    public function registerRoute($method, $uri, $controller)
+    /**
+     * Add a new route
+     * 
+     * @param string $method
+     * @param string $uri
+     * @param string $action
+     * @return void
+     */
+
+    public function registerRoute($method, $uri, $action)
     {
+        list($controller, $controllerMethod) = explode('@', $action);
+
         $this->routes[] = [
             'method' => $method,
             'uri' => $uri,
-            'controller' => $controller
+            'controller' => $controller,
+            'controllerMethod' => $controllerMethod
         ];
     }
 
@@ -71,18 +85,6 @@ class Router
         $this->registerRoute('DELETE', $uri, $controller);
     }
 
-    public function error($httpCode = 404)
-    {
-        http_response_code($httpCode);
-
-        if ($httpCode === 403 && file_exists(basePath("App/view/error/403.view.php"))) {
-            loadView("error/403");
-        } else {
-            loadView("error/404");
-        }
-
-        exit;
-    }
 
     /**
      * Route the request
@@ -95,11 +97,17 @@ class Router
     {
         foreach ($this->routes as $route) {
             if ($route['uri'] === $uri && $route['method'] === $method) {
-                require basePath('App/' . $route['controller']);
+                //Extract controller and controller method
+                $controller = 'App\\Controllers\\' . $route['controller'];
+                $controllerMethod = $route['controllerMethod'];
+
+                //Instantiate controller class
+                $controllerInstance = new $controller();
+                $controllerInstance->$controllerMethod();
                 return;
             }
         }
 
-        $this->error(403);
+        ErrorController::notFound();
     }
 }

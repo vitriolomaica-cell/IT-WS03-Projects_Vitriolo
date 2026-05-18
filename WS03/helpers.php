@@ -32,20 +32,24 @@ function loadView($name, $data = [])
 /**
  * Load partials
  * @param string $name/$partials
- * @return string
+ * @return void
  */
 
-function loadPartials($name): string
+function loadPartials($name)
 {
     $partialPath = basePath("App/view/partials/{$name}.php");
 
     if (file_exists($partialPath)) {
         ob_start();
         require $partialPath;
-        return ob_get_clean();
+        $content = ob_get_clean();
+        echo $content;
+        return $content;
     }
 
-    return "Partial {$name} not found";
+    $msg = "Partial {$name} not found";
+    echo $msg;
+    return $msg;
 }
 
 function inspect($value)
