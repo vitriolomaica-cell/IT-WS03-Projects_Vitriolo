@@ -57,6 +57,39 @@ function loadPartials($name): string
     return $msg;
 }
 
+function getBaseUrl(): string
+{
+    $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
+    $base = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+    return $base === '' || $base === '.' ? '' : $base;
+}
+
+function siteUrl(string $path = ''): string
+{
+    $base = getBaseUrl();
+    $path = trim($path);
+
+    if ($path === '') {
+        return $base === '' ? '/' : $base;
+    }
+
+    return $base . '/' . ltrim($path, '/');
+}
+
+function stripBaseUrl(string $uri): string
+{
+    $base = getBaseUrl();
+
+    if ($base !== '' && strpos($uri, $base) === 0) {
+        $uri = substr($uri, strlen($base));
+        if ($uri === '') {
+            $uri = '/';
+        }
+    }
+
+    return $uri;
+}
+
 function inspect($value)
 {
     echo '<pre>';

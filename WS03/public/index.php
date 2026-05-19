@@ -15,6 +15,15 @@ $router = new Router();
 $routes = require basePath('routes.php');
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$uri = stripBaseUrl($uri);
 $method = $_SERVER['REQUEST_METHOD'];
 
-$router->route($uri, $method);
+try {
+    $router->route($uri, $method);
+} catch (\Exception $e) {
+    http_response_code(500);
+    loadView('error', [
+        'status' => '500',
+        'message' => $e->getMessage(),
+    ]);
+}
