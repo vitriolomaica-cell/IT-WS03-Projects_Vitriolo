@@ -1,5 +1,6 @@
 <?php
 
+
 namespace Framework;
 
 use Framework\Session;

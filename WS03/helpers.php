@@ -79,6 +79,7 @@ function sanitize($dirty)
     return filter_var(trim($dirty), FILTER_SANITIZE_SPECIAL_CHARS);
 }
 
+
 /**
  * Redirect to a given URL
  * 

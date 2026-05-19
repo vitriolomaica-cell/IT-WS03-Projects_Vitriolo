@@ -20,7 +20,7 @@ class ErrorController
     }
 
     /**
-     * Error 403 unauthorized error
+ 
      * 
      * @return void
      */

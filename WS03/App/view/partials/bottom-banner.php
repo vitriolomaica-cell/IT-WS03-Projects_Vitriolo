@@ -1,6 +1,5 @@
 <!-- Bottom Banner -->
 <?php
-
 use Framework\Session;
 
 ?>

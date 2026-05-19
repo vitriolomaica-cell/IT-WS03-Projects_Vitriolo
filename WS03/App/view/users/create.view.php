@@ -66,4 +66,5 @@
     </div>
 </div>
 
+
 <?= loadPartials('footer') ?>

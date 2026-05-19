@@ -10,5 +10,4 @@
         <a class="block text-center" href="/listings">Go Back to Listings</a>
     </div>
 </section>
-
 <?= loadPartials('footer'); ?>

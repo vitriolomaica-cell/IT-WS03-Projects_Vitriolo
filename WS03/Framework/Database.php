@@ -36,6 +36,7 @@ class Database
 
             $sth->execute();
 
+            
             return $sth;
         } catch (PDOException $e) {
             throw new Exception("Query failed to execute: {$e->getMessage()}");

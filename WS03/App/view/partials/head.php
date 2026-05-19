@@ -9,5 +9,4 @@
     <link rel="stylesheet" href="css/custom.css" />
     <title>Jobseeker</title>
   </head>
-  
 <body class="bg-gray-100">

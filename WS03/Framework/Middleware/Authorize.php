@@ -17,7 +17,6 @@ class Authorize
         return Session::has('user');
     }
 
-
     /**
      * Handles the user's request
      * 

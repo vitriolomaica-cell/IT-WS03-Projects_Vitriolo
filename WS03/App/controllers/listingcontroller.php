@@ -55,7 +55,6 @@ class ListingController
         ]);
     }
 
-
     /**
      * Store data in database
      * 

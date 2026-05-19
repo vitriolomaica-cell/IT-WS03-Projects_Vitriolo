@@ -1,7 +1,6 @@
  <?php
 
     use Framework\Session;
-
     ?>
 
  <!-- Nav -->

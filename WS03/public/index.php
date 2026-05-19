@@ -14,7 +14,7 @@ require '../helpers.php';
 
 
 
-// inspectAndDie(session_status());
+
 
 // $db = new Database($config);
 

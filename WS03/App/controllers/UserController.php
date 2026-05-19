@@ -192,7 +192,6 @@ class UserController
 
             exit;
         }
-
         //Check if password is correct
 
         if (!password_verify($password, $user->password)) {

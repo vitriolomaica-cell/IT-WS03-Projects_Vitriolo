@@ -72,7 +72,6 @@ class Session
     }
 
     /**
-     * Clear all session data
      * 
      * @return void
      */

@@ -71,5 +71,6 @@ use Framework\Authorization;
   </a>
 </section>
 
+
 <?php loadPartials('bottom-banner');
 loadPartials('footer'); ?>
