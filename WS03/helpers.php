@@ -19,7 +19,7 @@ function basePath($path = '')
 
 function loadView($name, $data = [])
 {
-    $viewPath =  basePath("App/view/{$name}.view.php");
+    $viewPath =  basePath("App/views/{$name}.view.php");
 
     if (file_exists($viewPath)) {
         extract($data);
@@ -35,59 +35,16 @@ function loadView($name, $data = [])
  * @return void
  */
 
-/**
- * Load partials
- * @param string $name/$partials
- * @return string
- */
-function loadPartials($name): string
+function loadPartials($name, $data = [])
 {
-    $partialPath = basePath("App/view/partials/{$name}.php");
+    $partialPath = basePath("App/views/partials/{$name}.php");
 
     if (file_exists($partialPath)) {
-        ob_start();
+        extract($data);
         require $partialPath;
-        $content = ob_get_clean();
-        echo $content;
-        return $content;
+    } else {
+        echo "Partial {$name} not found";
     }
-
-    $msg = "Partial {$name} not found";
-    echo $msg;
-    return $msg;
-}
-
-function getBaseUrl(): string
-{
-    $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
-    $base = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
-    return $base === '' || $base === '.' ? '' : $base;
-}
-
-function siteUrl(string $path = ''): string
-{
-    $base = getBaseUrl();
-    $path = trim($path);
-
-    if ($path === '') {
-        return $base === '' ? '/' : $base;
-    }
-
-    return $base . '/' . ltrim($path, '/');
-}
-
-function stripBaseUrl(string $uri): string
-{
-    $base = getBaseUrl();
-
-    if ($base !== '' && strpos($uri, $base) === 0) {
-        $uri = substr($uri, strlen($base));
-        if ($uri === '') {
-            $uri = '/';
-        }
-    }
-
-    return $uri;
 }
 
 function inspect($value)
@@ -100,4 +57,34 @@ function inspect($value)
 function formatSalary($salary)
 {
     return '$' . number_format(floatval($salary));
+}
+
+function inspectAndDie($value)
+{
+    echo '<pre>';
+    die(var_dump($value));
+    echo '</pre>';
+}
+
+/**
+ * sanitize data
+ *
+ * @param string $dirty
+ * @return string
+ */
+
+function sanitize($dirty)
+{
+    return filter_var(trim($dirty), FILTER_SANITIZE_SPECIAL_CHARS);
+}
+
+/**
+ * redirect to a given url
+ *
+ * @param string $url
+ * @return void
+ */
+function redirect($url)
+{
+    header("Location: {$url}");
 }

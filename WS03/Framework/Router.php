@@ -2,15 +2,8 @@
 
 namespace Framework;
 
-use App\Controllers\ErrorController;
-
-// $routes = require basePath('routes.php');
-
-// if (array_key_exists($uri, $routes)) {
-//     require basePath($routes[$uri]);
-// } else {
-//     require basePath($routes['404']);
-// }
+use App\controllers\ErrorController;
+use Error;
 
 class Router
 {
@@ -18,7 +11,6 @@ class Router
 
     /**
      * Add a new route
-     * 
      * @param string $method
      * @param string $uri
      * @param string $action
@@ -41,7 +33,7 @@ class Router
      * Add a GET route
      * @param string $uri
      * @param $controller
-     * return void
+     * @return void
      */
 
     public function get($uri, $controller)
@@ -86,6 +78,7 @@ class Router
     }
 
 
+
     /**
      * Route the request
      * @param string $uri
@@ -93,9 +86,15 @@ class Router
      * @return void
      */
 
-    public function route($uri, $method)
+    public function route($uri)
     {
-        $requestMethod = strtoupper($method);
+        $requestMethod = $_SERVER['REQUEST_METHOD'];
+
+        //check for _method input
+        if ($requestMethod === 'POST' && isset($_POST['_method'])) {
+            //override the request method with the value of _method
+            $requestMethod = strtoupper($_POST['_method']);
+        }
 
         foreach ($this->routes as $route) {
             //Split the current URI into segment
@@ -129,7 +128,7 @@ class Router
                 }
 
                 if ($match) {
-                    $controller = 'App\\Controllers\\' . $route['controller'];
+                    $controller = 'App\\controllers\\' . $route['controller'];
                     $controllerMethod = $route['controllerMethod'];
 
                     //instantiate the controller class

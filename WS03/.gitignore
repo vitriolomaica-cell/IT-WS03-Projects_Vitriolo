@@ -3,6 +3,4 @@
 /config/db.php
 .env
 .vscode
-Thumbs.db
-Desktop.ini
-git push
+.DS_Store

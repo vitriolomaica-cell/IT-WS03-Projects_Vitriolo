@@ -3,8 +3,6 @@
 namespace Framework;
 
 use PDO;
-use PDOException;
-use Exception;
 
 class Database
 {
@@ -19,12 +17,10 @@ class Database
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
         ];
 
-        if (!in_array('mysql', PDO::getAvailableDrivers())) {
-            throw new Exception('PDO MySQL driver is not installed or enabled. Please enable pdo_mysql in php.ini.');
-        }
-
         try {
             $this->conn = new PDO($dsn, $config['username'], $config['password'], $options);
+
+            echo 'connected';
         } catch (PDOException $e) {
             throw new Exception("Database connection failed: {$e->getMessage()}");
         }
@@ -35,7 +31,7 @@ class Database
         try {
             $sth = $this->conn->prepare($query);
 
-            //Bind named params
+            // Bind named parameters
             foreach ($params as $param => $value) {
                 $sth->bindValue(':' . $param, $value);
             }

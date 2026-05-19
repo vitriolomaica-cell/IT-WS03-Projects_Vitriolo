@@ -1,29 +1,20 @@
 <?php
-
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
+
+session_start();
 
 require __DIR__ . '/../vendor/autoload.php';
 require '../helpers.php';
 
 use Framework\Router;
 
-// $db = new Database($config);
 
 $router = new Router();
 
 $routes = require basePath('routes.php');
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = stripBaseUrl($uri);
-$method = $_SERVER['REQUEST_METHOD'];
 
-try {
-    $router->route($uri, $method);
-} catch (\Exception $e) {
-    http_response_code(500);
-    loadView('error', [
-        'status' => '500',
-        'message' => $e->getMessage(),
-    ]);
-}
+
+$router->route($uri);
