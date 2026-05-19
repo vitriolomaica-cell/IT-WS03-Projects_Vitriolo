@@ -6,11 +6,12 @@ class Validation
 {
     /**
      * Validate a string
-     *
+     * 
      * @param string $value
      * @param int $min
      * @param int $max
-     * @return bool
+     * 
+     * return bool
      */
 
     public static function string($value, $min = 1, $max = INF)
@@ -18,7 +19,6 @@ class Validation
         if (is_string($value)) {
             $value = trim($value);
             $length = strlen($value);
-
 
             return $length >= $min && $length <= $max;
         }
@@ -28,25 +28,26 @@ class Validation
 
     /**
      * Validate an email
-     *
+     * 
      * @param string $value
      * 
-     * @return mixed
+     * return mixed
      */
 
     public static function email($value)
     {
         $value = trim($value);
+
         return filter_var($value, FILTER_VALIDATE_EMAIL);
     }
 
     /**
-     * check if values are match
-     *
+     * Check if values match
+     * 
      * @param string $value1
      * @param string $value2
      * 
-     * @return bool
+     * return bool
      */
 
     public static function match($value1, $value2)

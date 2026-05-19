@@ -2,18 +2,18 @@
 
 $router->get('/', 'HomeController@index');
 $router->get('/listings', 'ListingController@index');
-$router->get('/listings/create', 'ListingController@create');
-$router->get('/listings/edit/{id}', 'ListingController@edit');
+$router->get('/listings/create', 'ListingController@create', ['auth']);
+$router->get('/listings/search', 'ListingController@search');
+$router->get('/listings/edit/{id}', 'ListingController@edit', ['auth']);
 $router->get('/listings/{id}', 'ListingController@show');
+$router->get('/auth/register', 'UserController@create', ['guest']);
+$router->get('/auth/login', 'UserController@login', ['guest']);
 
+$router->post('/listings', 'ListingController@store', ['auth']);
+$router->post('/auth/register', 'UserController@store', ['guest']);
+$router->post('/auth/login', 'UserController@authenticate', ['guest']);
+$router->post('/auth/logout', 'UserController@logout', ['auth']);
 
+$router->put('/listings/{id}', 'ListingController@update', ['auth']);
 
-$router->post('/listings', 'ListingController@store');
-$router->put('/listings/{id}', 'ListingController@update');
-$router->delete('/listings/{id}', 'ListingController@destroy');
-
-
-$router->get('/auth/register', 'UserController@create');
-$router->get('/auth/login', 'UserController@login');
-
-$router->post('/auth/register', 'UserController@store');
+$router->delete('/listings/{id}', 'ListingController@destroy', ['auth']);

@@ -19,7 +19,7 @@ function basePath($path = '')
 
 function loadView($name, $data = [])
 {
-    $viewPath =  basePath("App/view/{$name}.view.php");
+    $viewPath =  basePath("App/views/{$name}.view.php");
 
     if (file_exists($viewPath)) {
         extract($data);
@@ -37,7 +37,7 @@ function loadView($name, $data = [])
 
 function loadPartials($name, $data = [])
 {
-    $partialPath = basePath("App/view/partials/{$name}.php");
+    $partialPath = basePath("App/views/partials/{$name}.php");
 
     if (file_exists($partialPath)) {
         extract($data);
@@ -67,9 +67,10 @@ function inspectAndDie($value)
 }
 
 /**
- * sanitize data
- *
+ * Sanitize data
+ * 
  * @param string $dirty
+ * 
  * @return string
  */
 
@@ -79,12 +80,15 @@ function sanitize($dirty)
 }
 
 /**
- * redirect to a given url
- *
+ * Redirect to a given URL
+ * 
  * @param string $url
+ * 
  * @return void
  */
+
 function redirect($url)
 {
     header("Location: {$url}");
+    exit;
 }

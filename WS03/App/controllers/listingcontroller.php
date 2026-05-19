@@ -1,14 +1,16 @@
 <?php
 
-namespace App\controllers;
+namespace App\Controllers;
 
 use Framework\Database;
 use Framework\Validation;
+use Framework\Session;
+use Framework\Authorization;
 
 class ListingController
 {
-
     protected $db;
+
     public function __construct()
     {
         $config = require basePath('config/db.php');
@@ -18,36 +20,33 @@ class ListingController
 
     public function index()
     {
+        // inspectAndDie(Validation::match('a', 'b'));
 
+        $listings = $this->db->query('SELECT * FROM listings ORDER BY created_at DESC')->fetchAll();
 
-        $listings = $this->db->query('SELECT * FROM listings')->fetchAll();
-
-
-        loadView(
-            'listings/index',
-            ['listings' =>
-            $listings]
-        );
+        loadView('listings/index', ['listings' => $listings]);
     }
 
     public function create()
     {
-
         loadView('listings/create');
     }
 
     public function show($params)
     {
-        $id = $params['id'] ?? '';
+        $id = $params['id'] ?? "";
         $params = [
             'id' => $id
         ];
 
         $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
 
-        //check if listing exists
+        // inspect($listing);
+
+        //Check if listing exists
+
         if (!$listing) {
-            ErrorController::notFound('Listing Not Found');
+            ErrorController::notFound('Listing not found');
             return;
         }
 
@@ -56,16 +55,16 @@ class ListingController
         ]);
     }
 
+
     /**
-     * store data in database
-     *
+     * Store data in database
      * 
-     * @return void
+     * return void
      */
 
     public function store()
     {
-        $allowfields = [
+        $allowedFields = [
             'title',
             'description',
             'salary',
@@ -74,134 +73,169 @@ class ListingController
             'address',
             'city',
             'state',
+            'phone',
             'email',
             'requirements',
             'benefits'
         ];
 
-        $newListingData = array_intersect_key($_POST, array_flip($allowfields));
+        $newListingData = array_intersect_key($_POST, array_flip($allowedFields));
 
-        $newListingData['user_id'] = 1; // hardcoded user id for now
+        $newListingData['user_id'] = Session::get('user')['id'];
 
         $newListingData = array_map('sanitize', $newListingData);
 
-        $requiredFields = ['title', 'description', 'salary', 'email', 'city', 'state'];
+        $requiredFields = [
+            'title',
+            'description',
+            'salary',
+            'city',
+            'state',
+            'email'
+        ];
 
         $errors = [];
 
-        foreach ($requiredFields as $fields) {
-            if (empty($newListingData[$fields]) || !Validation::string($newListingData[$fields])) {
-                $errors[$fields] = ucfirst($fields) . ' is required';
+        foreach ($requiredFields as $field) {
+            if (empty($newListingData[$field]) || !Validation::string(($newListingData[$field]))) {
+                $errors[$field] = ucfirst($field) . ' is required';
             }
         }
 
         if (!empty($errors)) {
-            //reload view with error
-            loadView('listings/create', [
-                'errors' => $errors,
-                'listing' => $newListingData
-            ]);
+            //Reload view with errors
+            loadView('listings/create', ['errors' => $errors, 'listing' => $newListingData]);
         } else {
             //Submit data
-
 
             $fields = [];
 
             foreach ($newListingData as $field => $value) {
-                $fields[] = "$field";
+                $fields[] = $field;
             }
+
             $fields = implode(', ', $fields);
 
             $value = [];
-
             foreach ($newListingData as $field => $value) {
-                // covert empty string to null
+                //Convert empty strings to null
+
                 if ($value === '') {
                     $newListingData[$field] = null;
                 }
+
                 $values[] = ':' . $field;
             }
 
             $values = implode(', ', $values);
 
             $query = "INSERT INTO listings ({$fields}) VALUES ({$values})";
+
             $this->db->query($query, $newListingData);
+
+            Session::setFlashMessage('success_message', 'Listing created successfully');
 
             redirect('/listings');
         }
     }
+
     /**
-     * delete a listing
-     *
+     * Delete a listing
+     * 
      * @param array $params
+     * 
      * @return void
      */
+
     public function destroy($params)
     {
         $id = $params['id'];
+
         $params = [
             'id' => $id
         ];
 
         $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
 
-        //check if listing exists
+        //Check if listing exists
+
         if (!$listing) {
-            ErrorController::notFound('Listing Not Found');
+            ErrorController::notFound('Listing not found');
             return;
         }
+
+        //Authorization
+
+        if (!Authorization::isOwner($listing->user_id)) {
+            Session::setFlashMessage('error_message', 'You are not authorized to delete this listing');
+            return redirect('/listings/' . $listing->id);
+        }
+
         $this->db->query('DELETE FROM listings WHERE id = :id', $params);
 
+        //Set flash message
 
-        //set flash message
-        $_SESSION['success_message'] = 'Listing deleted successfully';
-
+        Session::setFlashMessage('success_message', 'Listing deleted successfully');
 
         redirect('/listings');
     }
 
     public function edit($params)
     {
-        $id = $params['id'] ?? '';
+        $id = $params['id'] ?? "";
         $params = [
             'id' => $id
         ];
 
         $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
 
-        //check if listing exists
+        // inspect($listing);
+
+        //Check if listing exists
+
         if (!$listing) {
-            ErrorController::notFound('Listing Not Found');
+            ErrorController::notFound('Listing not found');
             return;
         }
+
+        //Authorization
 
         loadView('listings/edit', [
             'listing' => $listing
         ]);
     }
 
-    /** 
-     * update listing data in database
+    /**
+     * Update listing
+     * 
      * @param array $params
-     * @return void
+     * @return variant
      */
 
     public function update($params)
     {
-        $id = $params['id'] ?? '';
+        $id = $params['id'] ?? "";
         $params = [
             'id' => $id
         ];
 
         $listing = $this->db->query('SELECT * FROM listings WHERE id = :id', $params)->fetch();
 
-        //check if listing exists
+        // inspect($listing);
+
+        //Check if listing exists
+
         if (!$listing) {
-            ErrorController::notFound('Listing Not Found');
+            ErrorController::notFound('Listing not found');
             return;
         }
 
-        $allowfields = [
+        if (!Authorization::isOwner($listing->user_id)) {
+            Session::setFlashMessage('error_message', 'You are not authorized to update this listing');
+            return redirect('/listings/' . $listing->id);
+        }
+
+        $allowedFields = [
             'title',
             'description',
             'salary',
@@ -210,16 +244,26 @@ class ListingController
             'address',
             'city',
             'state',
+            'phone',
             'email',
             'requirements',
             'benefits'
         ];
 
-        $updateValues = array_intersect_key($_POST, array_flip($allowfields));
+        $updateValues = [];
+
+        $updateValues = array_intersect_key($_POST, array_flip($allowedFields));
 
         $updateValues = array_map('sanitize', $updateValues);
 
-        $requiredFields = ['title', 'description', 'salary', 'email', 'city', 'state'];
+        $requiredFields = [
+            'title',
+            'description',
+            'salary',
+            'city',
+            'state',
+            'email'
+        ];
 
         $errors = [];
 
@@ -234,9 +278,11 @@ class ListingController
                 'listing' => $listing,
                 'errors' => $errors
             ]);
+
             exit;
         } else {
-            //submit to db
+            //Submit to DB
+
             $updateFields = [];
 
             foreach (array_keys($updateValues) as $field) {
@@ -248,11 +294,43 @@ class ListingController
             $updateQuery = "UPDATE listings SET {$updateFields} WHERE id = :id";
 
             $updateValues['id'] = $id;
+
             $this->db->query($updateQuery, $updateValues);
 
-            $_SESSION['success_message'] = 'Listing updated successfully';
+            Session::setFlashMessage('success_message', 'Listing updated successfully');
+
+            // inspectAndDie($id);
 
             redirect('/listings/' . $id);
         }
+    }
+
+    /**
+     * Search listings by keyword/location
+     * 
+     * @return void
+     */
+
+    public function search()
+    {
+        // inspectAndDie($_GET);
+        $keywords = isset($_GET['keywords']) ? trim($_GET['keywords']) : '';
+
+        $location = isset($_GET['location']) ? trim($_GET['location']) : '';
+
+        $query = "SELECT * FROM listings WHERE (title LIKE :keywords OR description LIKE :keywords OR tags LIKE :keywords OR company LIKE :keywords) AND (city LIKE :location OR state LIKE :location)";
+
+        $params = [
+            'keywords' => "%{$keywords}%",
+            'location' => "%{$location}%"
+        ];
+
+        $listings = $this->db->query($query, $params)->fetchAll();
+
+        loadView('/listings/index', [
+            'listings' => $listings,
+            'keywords' => $keywords,
+            'location' => $location
+        ]);
     }
 }
