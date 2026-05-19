@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Controllers;
+namespace App\controllers;
 
 use Framework\Database;
 
 class HomeController
 {
-    protected $db;
 
+    protected $db;
     public function __construct()
     {
         $config = require basePath('config/db.php');
@@ -17,8 +17,14 @@ class HomeController
 
     public function index()
     {
+
         $listings = $this->db->query('SELECT * FROM listings LIMIT 6')->fetchAll();
 
-        loadView('home', ['listings' => $listings]);
+
+        loadView(
+            'home',
+            ['listings' =>
+            $listings]
+        );
     }
 }
